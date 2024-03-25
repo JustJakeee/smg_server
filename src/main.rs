@@ -8,10 +8,37 @@ use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use bincode;
-use smg_lib::*;
 
 struct State {
     players: HashMap<Uuid, PlayerState>,
+}
+
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub enum Packet {
+    Connect(Uuid),
+    Disconnect(Uuid),
+    Message(String),
+    Player(PlayerState),
+    List(),
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+pub struct PlayerState {
+    pub uuid: Uuid,
+    pub x: f32,
+    pub y: f32,
+}
+
+impl PlayerState {
+    // new take Vec2
+    pub fn new(uuid: Uuid, pos: Vec2) -> Self {
+        Self {
+            uuid,
+            x: pos.x,
+            y: pos.y,
+        }
+    }
 }
 
 fn main() -> Result<()> {

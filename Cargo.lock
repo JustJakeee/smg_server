@@ -85,16 +85,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "smg_lib"
-version = "0.1.0"
-source = "git+https://github.com/JustJakeee/smg_lib.git#9e050433ea209d5f2077a2ca5181a696c737965d"
-dependencies = [
- "glam",
- "serde",
- "uuid",
-]
-
-[[package]]
 name = "smg_server"
 version = "0.1.0"
 dependencies = [
@@ -102,7 +92,6 @@ dependencies = [
  "bincode",
  "glam",
  "serde",
- "smg_lib",
  "uuid",
 ]
 
