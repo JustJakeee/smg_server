@@ -1,18 +1,17 @@
 // udp game server binary
 #![allow(unused)]
 
-use std::net::UdpSocket;
 use anyhow::Result;
-use glam::Vec2;
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use uuid::Uuid;
 use bincode;
+use glam::Vec2;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::net::UdpSocket;
+use uuid::Uuid;
 
 struct State {
     players: HashMap<Uuid, PlayerState>,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum Packet {
@@ -44,7 +43,9 @@ impl PlayerState {
 fn main() -> Result<()> {
     let socket = UdpSocket::bind("0.0.0.0:5000")?;
     println!("listening on {}", socket.local_addr()?);
-    let mut state = State { players: HashMap::new() };
+    let mut state = State {
+        players: HashMap::new(),
+    };
     let mut buf = [0; 1024];
 
     loop {
@@ -59,8 +60,10 @@ fn handle_packet(packet: Packet, src: std::net::SocketAddr, socket: &UdpSocket, 
     match packet {
         Packet::Connect(uuid) => {
             println!("{} connected with uuid {:?}", src, uuid);
-            state.players.insert(uuid, PlayerState { uuid, x: 0., y: 0. });
-            println!("{:?}", state.players);
+            state
+                .players
+                .insert(uuid, PlayerState { uuid, x: 0., y: 0. });
+            println!("{:#?}", state.players);
         }
         Packet::Disconnect(uuid) => {
             println!("{} disconnected", src);
@@ -79,7 +82,9 @@ fn handle_packet(packet: Packet, src: std::net::SocketAddr, socket: &UdpSocket, 
         Packet::List() => {
             // make a vec of all player uuids
             let uuids: Vec<Uuid> = state.players.keys().cloned().collect();
-            socket.send_to(bincode::serialize(&uuids).unwrap().as_slice(), &src).unwrap();
+            socket
+                .send_to(bincode::serialize(&uuids).unwrap().as_slice(), &src)
+                .unwrap();
             // println!("prompted list of players to {:?}", src);
         }
         _ => {
